@@ -17,6 +17,10 @@ the piece appears on a live site. Invented content, not the real archive.
 - Runs locally: `pnpm dev --port 3001` (3000 is taken by tbr-art-board).
 - Demo login: `editor@thebrooklynreview.demo` / `brooklyn2026`
 
+## Repo
+Pushed to **https://github.com/The-Brooklyn-Review/tbr-cms-demo** (private, org-owned).
+`.env`, `node_modules/`, and `media/` are gitignored — no secrets in the repo.
+
 ## Not done — next session picks up here
 1. **Deploy to Vercel + Supabase so it survives the laptop closing.**
    - Supabase project already created: `tbr-cms-demo` (ref `jvmiljmyjtyhetlblprw`, us-east-1, $0/mo).
@@ -25,8 +29,10 @@ the piece appears on a live site. Invented content, not the real archive.
      host for serverless: `aws-0-us-east-1.pooler.supabase.com:5432`.
    - Push schema + run seed against Supabase.
    - Create Vercel project under team **The Brooklyn Review**
-     (`team_40vODsSegEo14mmXqUrufHCm`), set `DATABASE_URL`, `PAYLOAD_SECRET`,
-     `NEXT_PUBLIC_SERVER_URL`.
+     (`team_40vODsSegEo14mmXqUrufHCm`), linked to the GitHub repo above. Set
+     `DATABASE_URL`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_SERVER_URL`.
+   - Generate a **fresh** `PAYLOAD_SECRET` for the deploy — do not reuse the
+     local demo one in `.env`.
 2. **Media storage adapter** — local disk does not work on serverless.
    Add `@payloadcms/storage-vercel-blob` with `clientUploads: true` (Vercel caps
    request bodies at 4.5MB; art uploads will exceed it).
