@@ -18,8 +18,13 @@ export const Pieces: CollectionConfig = {
     description:
       'A single published work — a poem, a story, an essay, an interview. This is where most editorial work happens.',
     livePreview: {
+      // Falls back to the homepage until the piece has a slug — pointing at
+      // /pieces/ with nothing after it 404s, which is what "Live Preview"
+      // showed for a piece that hadn't been given a slug yet.
       url: ({ data }) =>
-        `${process.env.NEXT_PUBLIC_SERVER_URL || ''}/pieces/${data?.slug || ''}`,
+        data?.slug
+          ? `${process.env.NEXT_PUBLIC_SERVER_URL || ''}/pieces/${data.slug}`
+          : `${process.env.NEXT_PUBLIC_SERVER_URL || ''}/`,
     },
   },
   versions: {
