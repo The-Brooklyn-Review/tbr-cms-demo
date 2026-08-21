@@ -130,6 +130,9 @@ export const seed = async (payload: Payload) => {
   const fiction = await payload.create({
     collection: 'pieces',
     data: {
+      // Collections with drafts enabled default to _status:'draft'. Seeded
+      // demo content is meant to be live, so say so explicitly.
+      _status: 'published',
       title: 'Things I Have Made a Fiction',
       slug: 'things-i-have-made-a-fiction',
       genre: genres['fiction'].id,
@@ -154,6 +157,9 @@ export const seed = async (payload: Payload) => {
   const nonfiction = await payload.create({
     collection: 'pieces',
     data: {
+      // Collections with drafts enabled default to _status:'draft'. Seeded
+      // demo content is meant to be live, so say so explicitly.
+      _status: 'published',
       title: 'Sachsenhausen',
       slug: 'sachsenhausen',
       genre: genres['nonfiction'].id,
@@ -186,6 +192,9 @@ export const seed = async (payload: Payload) => {
   const story = await payload.create({
     collection: 'pieces',
     data: {
+      // Collections with drafts enabled default to _status:'draft'. Seeded
+      // demo content is meant to be live, so say so explicitly.
+      _status: 'published',
       title: 'The Receivers',
       slug: 'the-receivers',
       genre: genres['fiction'].id,
@@ -207,6 +216,9 @@ export const seed = async (payload: Payload) => {
   await payload.create({
     collection: 'pieces',
     data: {
+      // Collections with drafts enabled default to _status:'draft'. Seeded
+      // demo content is meant to be live, so say so explicitly.
+      _status: 'published',
       title: 'On Cutting the Plate',
       slug: 'on-cutting-the-plate',
       genre: genres['nonfiction'].id,
@@ -227,6 +239,9 @@ export const seed = async (payload: Payload) => {
   await payload.create({
     collection: 'pieces',
     data: {
+      // Collections with drafts enabled default to _status:'draft'. Seeded
+      // demo content is meant to be live, so say so explicitly.
+      _status: 'published',
       title: 'A Conversation with Junia Feld',
       slug: 'a-conversation-with-junia-feld',
       genre: genres['interview'].id,
