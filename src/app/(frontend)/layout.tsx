@@ -24,7 +24,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
         <header className="masthead">
           <div className="wrap masthead-inner">
             <Link href="/" className="wordmark">
-              The Brooklyn <em>Review</em>
+              The Brooklyn Review
             </Link>
             <nav>
               <Link href="/">Latest</Link>

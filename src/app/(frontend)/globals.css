@@ -42,12 +42,12 @@ a { color: inherit; }
 .wordmark {
   font-family: var(--font-display), Georgia, serif;
   font-weight: 600;
-  font-size: clamp(26px, 3.4vw, 40px);
+  font-size: clamp(20px, 2.6vw, 30px);
   line-height: 1;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
   text-decoration: none;
+  color: var(--ink);
 }
-.wordmark em { font-style: italic; color: var(--bc-red); }
 .masthead nav {
   display: flex;
   gap: 1.4rem;
@@ -58,6 +58,11 @@ a { color: inherit; }
 }
 .masthead nav a { text-decoration: none; padding-bottom: 2px; }
 .masthead nav a:hover { border-bottom: 1.5px solid var(--bc-red); }
+
+@media (max-width: 480px) {
+  .wrap { padding: 0 1.75rem; }
+  .masthead nav { gap: 1.1rem; }
+}
 
 /* ── shared type ──────────────────────────────────────────── */
 .kicker {
