@@ -176,14 +176,3 @@ footer.site {
   border-top: 1.5px solid var(--ink);
   padding: 1.5rem 0 3rem;
 }
-
-.demo-banner {
-  background: var(--bc-gold);
-  color: var(--ink);
-  font-family: var(--font-ui), system-ui, sans-serif;
-  font-size: 13px;
-  text-align: center;
-  padding: 0.5rem 1rem;
-  line-height: 1.4;
-}
-.demo-banner a { font-weight: 600; }
