@@ -18,7 +18,8 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
     <html lang="en" className={`${display.variable} ${body.variable} ${ui.variable} ${mono.variable}`}>
       <body>
         <div className="demo-banner">
-          Demo site — invented content, not the real archive. Publish something in the{' '}
+          Demo site — the Spring 2026 pieces are real excerpts from The Brooklyn Review;
+          Fall 2025 is invented for this walkthrough. Publish something in the{' '}
           <a href="/admin">CMS</a> and it appears here.
         </div>
         <header className="masthead">
