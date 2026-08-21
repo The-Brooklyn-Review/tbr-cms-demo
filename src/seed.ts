@@ -136,7 +136,7 @@ export const seed = async (payload: Payload) => {
       issue: spring26.id,
       publishedAt: '2026-05-24',
       featured: true,
-      deck: 'A story about waiting, memory, and the strange architecture of ordinary damage.',
+      deck: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. (Placeholder deck for this demo — the piece body below is the real published text.)',
       accentColor: '#a8542f',
       contributors: [alexis.id],
       artwork: [artAkimbo.id],
