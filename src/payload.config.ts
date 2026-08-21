@@ -38,9 +38,13 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
       // Supabase's session pooler caps total clients at 15. Each serverless
       // function instance opens its own pool, so this must stay small or
-      // concurrent instances exhaust it (EMAXCONNSESSION).
-      max: 1,
-      idleTimeoutMillis: 10000,
+      // concurrent instances exhaust it (EMAXCONNSESSION) — but Payload
+      // issues concurrent queries within a single request, so max:1
+      // deadlocks (a query waits on a connection held by a sibling query in
+      // the same request that can't finish until the first one does).
+      max: 3,
+      idleTimeoutMillis: 5000,
+      connectionTimeoutMillis: 10000,
     },
   }),
   collections: [Pieces, Issues, Contributors, Artworks, Genres, Media, Users],
