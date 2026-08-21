@@ -6,8 +6,7 @@ export const Contributors: CollectionConfig = {
     useAsTitle: 'name',
     group: 'Publication',
     defaultColumns: ['name', 'roles', 'slug'],
-    description:
-      'Everyone who appears in the magazine — writers, artists, translators, editors. One entry per person, even if they wear more than one hat.',
+    description: 'Writers, artists, translators, and editors — one entry per person.',
   },
   access: { read: () => true },
   fields: [
@@ -26,16 +25,14 @@ export const Contributors: CollectionConfig = {
       required: true,
       options: ['Writer', 'Artist', 'Translator', 'Editor'],
       admin: {
-        description:
-          'A person can hold more than one role — a poet who also makes collages gets both, and keeps one page.',
+        description: 'Select all roles that apply.',
       },
     },
     {
       name: 'bio',
       type: 'richText',
       admin: {
-        description:
-          'The contributor note that runs at the foot of a piece. Works for writers and artists alike.',
+        description: 'Shown at the foot of their pieces.',
       },
     },
     {

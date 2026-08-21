@@ -6,7 +6,7 @@ export const Genres: CollectionConfig = {
     useAsTitle: 'name',
     group: 'Taxonomy',
     defaultColumns: ['name', 'slug', 'description'],
-    description: 'Fiction, Poetry, Nonfiction, and so on. Each genre gets its own archive page.',
+    description: 'Fiction, Poetry, Nonfiction, and so on.',
   },
   access: { read: () => true },
   fields: [

@@ -24,8 +24,7 @@ export const Users: CollectionConfig = {
         { label: 'Reader — can draft, cannot publish', value: 'reader' },
       ],
       admin: {
-        description:
-          'A real build would go finer-grained than this; two roles is enough to show the idea.',
+        description: 'Editor or Admin.',
       },
     },
   ],

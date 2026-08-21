@@ -12,7 +12,7 @@ import { RichBody } from '../../RichBody'
 export function PieceArticle({ initialPiece }: { initialPiece: any }) {
   const { data: piece } = useLivePreview<any>({
     initialData: initialPiece,
-    serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
+    serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'https://tbr-cms-demo.vercel.app',
     depth: 3,
   })
 
@@ -81,7 +81,7 @@ export function PieceArticle({ initialPiece }: { initialPiece: any }) {
 
       {related.length ? (
         <section className="related">
-          <span className="meta">Read next — chosen by the editors</span>
+          <span className="meta">Read next</span>
           <ul className="piece-list">
             {related.map((r: any) => (
               <li key={r.id}>

@@ -4,9 +4,10 @@ import {
   FixedToolbarFeature,
   HeadingFeature,
   HorizontalRuleFeature,
-  InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://tbr-cms-demo.vercel.app'
 
 export const Pieces: CollectionConfig = {
   slug: 'pieces',
@@ -15,16 +16,11 @@ export const Pieces: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Publication',
     defaultColumns: ['title', 'genre', 'issue', 'status', 'publishedAt'],
-    description:
-      'A single published work — a poem, a story, an essay, an interview. This is where most editorial work happens.',
+    description: 'A single published work: a poem, story, essay, or interview.',
     livePreview: {
       // Falls back to the homepage until the piece has a slug — pointing at
-      // /pieces/ with nothing after it 404s, which is what "Live Preview"
-      // showed for a piece that hadn't been given a slug yet.
-      url: ({ data }) =>
-        data?.slug
-          ? `${process.env.NEXT_PUBLIC_SERVER_URL || ''}/pieces/${data.slug}`
-          : `${process.env.NEXT_PUBLIC_SERVER_URL || ''}/`,
+      // /pieces/ with nothing after it 404s.
+      url: ({ data }) => (data?.slug ? `${SITE_URL}/pieces/${data.slug}` : `${SITE_URL}/`),
     },
   },
   versions: {
@@ -92,8 +88,7 @@ export const Pieces: CollectionConfig = {
               name: 'deck',
               type: 'textarea',
               admin: {
-                description:
-                  'A short standfirst shown under the title. One or two sentences. Optional.',
+                description: 'Optional standfirst shown under the title. One or two sentences.',
               },
             },
             {
@@ -101,10 +96,10 @@ export const Pieces: CollectionConfig = {
               type: 'richText',
               required: true,
               editor: lexicalEditor({
-                features: () => [
+                features: ({ defaultFeatures }) => [
+                  ...defaultFeatures.filter((f) => f.key !== 'heading'),
                   HeadingFeature({ enabledHeadingSizes: ['h2', 'h3'] }),
                   FixedToolbarFeature(),
-                  InlineToolbarFeature(),
                   HorizontalRuleFeature(),
                   BlocksFeature({
                     blocks: [
@@ -117,8 +112,7 @@ export const Pieces: CollectionConfig = {
                             type: 'textarea',
                             required: true,
                             admin: {
-                              description:
-                                'Paste the poem here. Line breaks and indentation are preserved exactly as you type them — this block exists so poems never get reflowed like prose.',
+                              description: 'Line breaks and indentation are preserved as typed.',
                             },
                           },
                         ],
@@ -141,8 +135,7 @@ export const Pieces: CollectionConfig = {
                 ],
               }),
               admin: {
-                description:
-                  'The piece itself. Use the Verse block for poetry so line breaks survive.',
+                description: 'Use the Verse block for poetry so line breaks survive.',
               },
             },
           ],
@@ -157,8 +150,7 @@ export const Pieces: CollectionConfig = {
               hasMany: true,
               required: true,
               admin: {
-                description:
-                  'The writer, plus a translator or interviewer if there is one. Their bios pull through automatically.',
+                description: 'The writer, plus translator or interviewer if applicable.',
               },
             },
             {
@@ -167,16 +159,14 @@ export const Pieces: CollectionConfig = {
               relationTo: 'artworks',
               hasMany: true,
               admin: {
-                description:
-                  'Art paired with this piece. The artist and their bio come from the artwork itself, so you never retype credits.',
+                description: 'Art paired with this piece.',
               },
             },
             {
               name: 'accentColor',
               type: 'text',
               admin: {
-                description:
-                  'Optional hex value pulled from the artwork, used as this piece’s accent on the site. Leave blank for the house colour.',
+                description: 'Optional hex color for this piece’s accent. Leave blank for the house color.',
               },
             },
           ],
@@ -191,8 +181,7 @@ export const Pieces: CollectionConfig = {
               hasMany: true,
               filterOptions: ({ id }) => (id ? { id: { not_equals: id } } : true),
               admin: {
-                description:
-                  'Optional. Chosen by hand — an editor deciding what reads well next to this, rather than an algorithm guessing.',
+                description: 'Optional. Shown as "Read next" on the piece page.',
               },
             },
           ],

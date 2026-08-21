@@ -6,8 +6,7 @@ export const Artworks: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Publication',
     defaultColumns: ['title', 'artist', 'medium', 'year'],
-    description:
-      'Art is its own thing here, not just an image attached to a piece. One entry per artwork, so it can be paired with writing and still keep its own credits.',
+    description: 'One entry per artwork. Link it to pieces from the piece editor.',
   },
   access: { read: () => true },
   fields: [
