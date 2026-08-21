@@ -34,7 +34,14 @@ export default buildConfig({
   },
   editor: lexicalEditor(),
   db: postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URL || '' },
+    pool: {
+      connectionString: process.env.DATABASE_URL || '',
+      // Supabase's session pooler caps total clients at 15. Each serverless
+      // function instance opens its own pool, so this must stay small or
+      // concurrent instances exhaust it (EMAXCONNSESSION).
+      max: 1,
+      idleTimeoutMillis: 10000,
+    },
   }),
   collections: [Pieces, Issues, Contributors, Artworks, Genres, Media, Users],
   secret: process.env.PAYLOAD_SECRET || '',
