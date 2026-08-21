@@ -1,5 +1,9 @@
 # tbr-cms-demo — where this left off (Aug 21, 2026)
 
+> **Project-wide plan: `~/Development/tbr-plan/PLAN.md`** — schedule, migration
+> runbook, design method, risks, and where everything lives. This file covers
+> only the demo.
+
 Goal: a shareable demo of the editorial workflow — editor publishes in Payload,
 the piece appears on a live site. Invented content, not the real archive.
 
