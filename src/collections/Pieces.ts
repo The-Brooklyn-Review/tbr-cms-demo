@@ -6,7 +6,7 @@ import {
   HorizontalRuleFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
-import { authenticated, editorOnly, publishedOrSignedIn } from '../access'
+import { publishedOrSignedIn, staff } from '../access'
 import { revalidatePiece, revalidatePieceOnDelete } from '../hooks/revalidate'
 import { slugField } from '../fields/slug'
 
@@ -58,9 +58,9 @@ export const Pieces: CollectionConfig = {
   access: {
     // Anonymous readers see published pieces only — drafts stay internal.
     read: publishedOrSignedIn,
-    create: authenticated,
-    update: authenticated,
-    delete: editorOnly,
+    create: staff,
+    update: staff,
+    delete: staff,
   },
   hooks: {
     afterChange: [revalidatePiece],

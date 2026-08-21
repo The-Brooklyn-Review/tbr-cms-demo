@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { anyone, authenticated, editorOnly } from '../access'
+import { anyone, authenticated, staff } from '../access'
 import { revalidateRelatedContent } from '../hooks/revalidate'
 
 export const Artworks: CollectionConfig = {
@@ -16,7 +16,7 @@ export const Artworks: CollectionConfig = {
     read: anyone,
     create: authenticated,
     update: authenticated,
-    delete: editorOnly,
+    delete: staff,
   },
   hooks: { afterChange: [revalidateRelatedContent] },
   fields: [

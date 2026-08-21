@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { editorOnly, editorOnlyField, selfOrEditor } from '../access'
+import { adminOnly, adminOnlyField, selfOrAdmin } from '../access'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -12,10 +12,12 @@ export const Users: CollectionConfig = {
   auth: true,
   access: {
     // Never public: these rows carry email addresses and password hashes.
-    read: selfOrEditor,
-    create: editorOnly,
-    update: selfOrEditor,
-    delete: editorOnly,
+    read: selfOrAdmin,
+    // Only an admin creates accounts — an editor shouldn't be able to add
+    // logins for other people, even though they can publish freely.
+    create: adminOnly,
+    update: selfOrAdmin,
+    delete: adminOnly,
     admin: ({ req: { user } }) => Boolean(user),
   },
   fields: [
@@ -24,16 +26,16 @@ export const Users: CollectionConfig = {
       name: 'role',
       type: 'select',
       required: true,
-      defaultValue: 'reader',
+      defaultValue: 'editor',
       options: [
-        { label: 'Editor — can publish anything', value: 'editor' },
-        { label: 'Reader — can draft, cannot publish', value: 'reader' },
+        { label: 'Admin — manages accounts, plus everything an editor can do', value: 'admin' },
+        { label: 'Editor — can draft, publish, and delete pieces', value: 'editor' },
       ],
-      // Without this a Reader could edit their own record and make
-      // themselves an Editor.
-      access: { update: editorOnlyField },
+      // Without this an editor could edit their own record and promote
+      // themselves to admin.
+      access: { update: adminOnlyField },
       admin: {
-        description: 'Editors can publish and delete. Readers can draft only.',
+        description: 'Editors handle day-to-day publishing. Admins additionally manage accounts.',
       },
     },
   ],

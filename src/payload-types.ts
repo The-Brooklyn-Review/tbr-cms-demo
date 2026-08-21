@@ -137,7 +137,7 @@ export interface Piece {
   id: number;
   title: string;
   /**
-   * The URL for this piece, e.g. /pieces/the-sunken-place
+   * The URL for this piece, e.g. /pieces/the-sunken-place. Auto-filled from the title.
    */
   slug: string;
   genre: number | Genre;
@@ -202,7 +202,7 @@ export interface Genre {
   id: number;
   name: string;
   /**
-   * Used in the URL, e.g. /genre/poetry
+   * Used in the URL, e.g. /genre/poetry. Auto-filled from the name.
    */
   slug: string;
   /**
@@ -224,6 +224,9 @@ export interface Issue {
    * Display name, e.g. "Spring 2026".
    */
   title: string;
+  /**
+   * Auto-filled from the title above. Edit it only if you need a different URL.
+   */
   slug: string;
   season: 'Spring' | 'Summer' | 'Fall' | 'Winter';
   /**
@@ -323,7 +326,7 @@ export interface Contributor {
   id: number;
   name: string;
   /**
-   * Used in the URL, e.g. /contributors/jane-doe
+   * The URL for this person, e.g. /contributors/jane-doe. Auto-filled from their name.
    */
   slug: string;
   /**
@@ -369,9 +372,9 @@ export interface User {
   id: number;
   name?: string | null;
   /**
-   * Editors can publish and delete. Readers can draft only.
+   * Editors handle day-to-day publishing. Admins additionally manage accounts.
    */
-  role: 'editor' | 'reader';
+  role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
