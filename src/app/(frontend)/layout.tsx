@@ -25,7 +25,6 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
             <nav>
               <Link href="/">Latest</Link>
               <Link href="/archive">Archive</Link>
-              <a href="/admin">CMS</a>
             </nav>
           </div>
         </header>
