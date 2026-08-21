@@ -11,6 +11,22 @@ import { revalidatePiece, revalidatePieceOnDelete } from '../hooks/revalidate'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://tbr-cms-demo.vercel.app'
 
+/**
+ * Routes previews through /next/preview, which verifies the editor's session
+ * and switches on draft mode before redirecting to the piece. Going straight
+ * to /pieces/<slug> would show the published version — or 404 on a piece that
+ * has never been published.
+ */
+const previewURL = (slug: string) => {
+  const params = new URLSearchParams({
+    slug,
+    collection: 'pieces',
+    path: `/pieces/${slug}`,
+    previewSecret: process.env.PREVIEW_SECRET || '',
+  })
+  return `${SITE_URL}/next/preview?${params.toString()}`
+}
+
 export const Pieces: CollectionConfig = {
   slug: 'pieces',
   labels: { singular: 'Piece', plural: 'Pieces' },
@@ -22,8 +38,11 @@ export const Pieces: CollectionConfig = {
     livePreview: {
       // Falls back to the homepage until the piece has a slug — pointing at
       // /pieces/ with nothing after it 404s.
-      url: ({ data }) => (data?.slug ? `${SITE_URL}/pieces/${data.slug}` : `${SITE_URL}/`),
+      url: ({ data }) => (data?.slug ? previewURL(data.slug) : `${SITE_URL}/`),
     },
+    // The "Preview" button. Same route as live preview, opened in a new tab so
+    // an editor can read a draft at full width before publishing it.
+    preview: (data) => (data?.slug ? previewURL(String(data.slug)) : `${SITE_URL}/`),
   },
   versions: {
     drafts: {

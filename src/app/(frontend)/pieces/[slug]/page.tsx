@@ -54,10 +54,14 @@ async function getPiece(slug: string, draft: boolean) {
     where: { slug: { equals: slug } },
     depth: 3,
     limit: 1,
+    // `draft: true` asks for the latest version rather than the published one.
+    // It is only ever reached through /next/preview, which has already checked
+    // for a signed-in editor.
     draft,
-    // Anonymous requests are already limited to published work by the
-    // collection's access control; overrideAccess:false keeps that true here.
-    overrideAccess: draft,
+    // Never bypass access control. Anonymous requests stay limited to
+    // published work by the collection's own rules, so a leaked preview URL
+    // still cannot pull an unpublished piece without a valid session.
+    overrideAccess: false,
   })
   return docs[0]
 }
