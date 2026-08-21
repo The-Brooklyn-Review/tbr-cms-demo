@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { anyone, authenticated, editorOnly } from '../access'
+import { revalidateRelatedContent } from '../hooks/revalidate'
 
 export const Artworks: CollectionConfig = {
   slug: 'artworks',
@@ -8,7 +10,15 @@ export const Artworks: CollectionConfig = {
     defaultColumns: ['title', 'artist', 'medium', 'year'],
     description: 'One entry per artwork. Link it to pieces from the piece editor.',
   },
-  access: { read: () => true },
+  access: {
+    // Reference data shown on published pages — public to read,
+    // signed-in to change.
+    read: anyone,
+    create: authenticated,
+    update: authenticated,
+    delete: editorOnly,
+  },
+  hooks: { afterChange: [revalidateRelatedContent] },
   fields: [
     { name: 'title', type: 'text', required: true },
     {

@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { anyone, authenticated, editorOnly } from '../access'
+import { revalidateRelatedContent } from '../hooks/revalidate'
 
 export const Issues: CollectionConfig = {
   slug: 'issues',
@@ -8,7 +10,15 @@ export const Issues: CollectionConfig = {
     defaultColumns: ['title', 'season', 'year', 'publishedAt'],
     description: 'One per published issue, e.g. "Spring 2026".',
   },
-  access: { read: () => true },
+  access: {
+    // Reference data shown on published pages — public to read,
+    // signed-in to change.
+    read: anyone,
+    create: authenticated,
+    update: authenticated,
+    delete: editorOnly,
+  },
+  hooks: { afterChange: [revalidateRelatedContent] },
   fields: [
     {
       name: 'title',

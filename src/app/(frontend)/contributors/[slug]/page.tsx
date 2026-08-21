@@ -5,7 +5,26 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { RichBody } from '../../RichBody'
 
-export const dynamic = 'force-dynamic'
+// Built once, rebuilt when a piece or contributor changes.
+export const revalidate = false
+
+export async function generateStaticParams() {
+  // See pieces/[slug]: a database hiccup at build time should cost prerendering,
+  // not the deploy.
+  try {
+    const payload = await getPayload({ config })
+    const { docs } = await payload.find({
+      collection: 'contributors',
+      select: { slug: true },
+      limit: 1000,
+      pagination: false,
+    })
+    return docs.filter((person) => person.slug).map((person) => ({ slug: person.slug! }))
+  } catch (error) {
+    console.error('[build] Could not prerender contributors; falling back to on-demand.', error)
+    return []
+  }
+}
 
 export default async function ContributorPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -22,7 +41,9 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
 
   const { docs: written } = await payload.find({
     collection: 'pieces',
-    where: { contributors: { contains: person.id } },
+    where: {
+      and: [{ contributors: { contains: person.id } }, { _status: { equals: 'published' } }],
+    },
     depth: 2,
     limit: 50,
   })
