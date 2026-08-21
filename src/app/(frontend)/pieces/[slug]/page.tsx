@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { draftMode } from 'next/headers'
+import { draftMode, headers as getHeaders } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { PieceArticle } from './PieceArticle'
@@ -49,6 +49,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 async function getPiece(slug: string, draft: boolean) {
   const payload = await getPayload({ config })
+
+  // The Local API has no request to read a session cookie from, so without
+  // this, req.user is always undefined inside access control — even for a
+  // signed-in editor — and publishedOrSignedIn falls back to its anonymous
+  // branch. That's invisible right up until a piece's latest version stops
+  // being the published one (any edit after publishing), at which point the
+  // draft query's own _status filter excludes it and preview 404s for an
+  // editor who is very much signed in.
+  let user
+  if (draft) {
+    const auth = await payload.auth({ headers: await getHeaders() })
+    user = auth?.user ?? undefined
+  }
+
   const { docs } = await payload.find({
     collection: 'pieces',
     where: { slug: { equals: slug } },
@@ -62,6 +76,7 @@ async function getPiece(slug: string, draft: boolean) {
     // published work by the collection's own rules, so a leaked preview URL
     // still cannot pull an unpublished piece without a valid session.
     overrideAccess: false,
+    user,
   })
   return docs[0]
 }
