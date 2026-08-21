@@ -9,7 +9,11 @@ import {
 import { authenticated, editorOnly, publishedOrSignedIn } from '../access'
 import { revalidatePiece, revalidatePieceOnDelete } from '../hooks/revalidate'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://tbr-cms-demo.vercel.app'
+// A trailing slash here breaks live preview silently: the postMessage handler
+// compares this string against the browser's event.origin, which never has a
+// trailing slash, so the two would never match and updates would be dropped
+// without an error anywhere.
+const SITE_URL = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://tbr-cms-demo.vercel.app').replace(/\/+$/, '')
 
 /**
  * Routes previews through /next/preview, which verifies the editor's session

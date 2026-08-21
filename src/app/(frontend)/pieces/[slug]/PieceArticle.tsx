@@ -6,7 +6,11 @@ import { useLivePreview } from '@payloadcms/live-preview-react'
 import { PayloadAdminBar } from '@payloadcms/admin-bar'
 import { RichBody } from '../../RichBody'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://tbr-cms-demo.vercel.app'
+// A trailing slash here breaks live preview silently: the postMessage handler
+// compares this string against the browser's event.origin, which never has a
+// trailing slash, so the two would never match and updates would be dropped
+// without an error anywhere.
+const SITE_URL = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://tbr-cms-demo.vercel.app').replace(/\/+$/, '')
 
 // Renders inside the admin's Live Preview iframe as well as on the public
 // site. useLivePreview listens for postMessage updates from the admin as an
