@@ -3,7 +3,10 @@
 import React from 'react'
 import Link from 'next/link'
 import { useLivePreview } from '@payloadcms/live-preview-react'
+import { PayloadAdminBar } from '@payloadcms/admin-bar'
 import { RichBody } from '../../RichBody'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://tbr-cms-demo.vercel.app'
 
 // Renders inside the admin's Live Preview iframe as well as on the public
 // site. useLivePreview listens for postMessage updates from the admin as an
@@ -12,9 +15,14 @@ import { RichBody } from '../../RichBody'
 export function PieceArticle({ initialPiece }: { initialPiece: any }) {
   const { data: piece } = useLivePreview<any>({
     initialData: initialPiece,
-    serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'https://tbr-cms-demo.vercel.app',
+    serverURL: SITE_URL,
     depth: 3,
   })
+
+  // Only visible to a logged-in editor — renders nothing for regular
+  // readers. Bumps the page down while it's showing so it doesn't cover
+  // the masthead.
+  const [showingAdminBar, setShowingAdminBar] = React.useState(false)
 
   const contributors = (piece.contributors || []).filter((c: any) => c && typeof c === 'object')
   const artworks = (piece.artwork || []).filter((a: any) => a && typeof a === 'object')
@@ -29,10 +37,20 @@ export function PieceArticle({ initialPiece }: { initialPiece: any }) {
   )
 
   return (
-    <article
-      className="article"
-      style={piece.accentColor ? ({ ['--accent' as any]: piece.accentColor }) : undefined}
-    >
+    <>
+      <PayloadAdminBar
+        cmsURL={SITE_URL}
+        collectionSlug="pieces"
+        id={piece.id}
+        onAuthChange={(user) => setShowingAdminBar(!!user)}
+      />
+      <article
+        className="article"
+        style={{
+          ...(piece.accentColor ? { ['--accent' as any]: piece.accentColor } : undefined),
+          ...(showingAdminBar ? { marginTop: '3rem' } : undefined),
+        }}
+      >
       <header className="article-head">
         <span className="kicker">
           {piece.genre && typeof piece.genre === 'object' ? piece.genre.name : ''}
@@ -93,6 +111,7 @@ export function PieceArticle({ initialPiece }: { initialPiece: any }) {
           </ul>
         </section>
       ) : null}
-    </article>
+      </article>
+    </>
   )
 }
