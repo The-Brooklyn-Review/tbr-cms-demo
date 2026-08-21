@@ -21,7 +21,45 @@ the piece appears on a live site. Invented content, not the real archive.
 Pushed to **https://github.com/The-Brooklyn-Review/tbr-cms-demo** (private, org-owned).
 `.env`, `node_modules/`, and `media/` are gitignored — no secrets in the repo.
 
-## Done since (Aug 21, 2026 — autonomous continuation)
+## 🟢 LIVE — deployed Aug 21, 2026
+
+**https://tbr-cms-demo.vercel.app** — homepage, piece pages, and `/admin` all
+confirmed working end-to-end against Supabase. Demo login:
+`editor@thebrooklynreview.demo` / `brooklyn2026`.
+
+Deployed via Vercel's file-upload API (`deploy_to_vercel`), **not** git-linked —
+the GitHub App integration available in this environment can't create repos or
+change repo visibility (403 "Resource not accessible by integration" on both),
+and the Vercel team is on the Hobby plan, which can't link a private org repo.
+So there's currently no auto-deploy-on-push. To redeploy after future commits:
+either re-run the file-upload deploy, or unblock git-linking by making the repo
+public, upgrading the Vercel team to Pro, or widening the GitHub App's
+permissions — then link normally via `create_git_project`.
+
+Two pre-existing (unrelated to this session's earlier work) dead-code files
+broke the Vercel build and were deleted: `src/utilities/formatAuthors.ts`,
+`generateMeta.ts`, `generatePreviewPath.ts`, `getGlobals.ts`, `getRedirects.ts`,
+and `getDocument.ts` — all leftover from the original website template,
+unused anywhere in this app, referencing collections (`posts`, `pages`) that
+don't exist in this schema. `src/seed.ts`'s `mk()` helper also had a
+`roles: string[]` param that needed narrowing to the actual union type.
+
+Live env vars (set in Vercel dashboard — **not** in git):
+- `DATABASE_URL` → `payload_app` role on the Supabase pooler (see below)
+- `PAYLOAD_SECRET` → freshly generated for this deploy, not the local `.env` one
+- `NEXT_PUBLIC_SERVER_URL` → `https://tbr-cms-demo.vercel.app`
+- `BLOB_READ_WRITE_TOKEN` → **not yet set** — no Blob store created yet, so
+  media uploads through the admin UI will still write to local disk (which is
+  read-only/ephemeral on Vercel and will fail). Next session: Storage →
+  Create Database → Blob → connect to project, then redeploy.
+
+Supabase advisory: RLS is disabled on all 18 tables in `public`. Not a
+functional issue here since the app connects via a dedicated Postgres role
+over the session pooler, not Supabase's PostgREST/anon-key API — but flagged,
+not auto-fixed, since enabling RLS without policies would lock out the app's
+own connection. Remediation SQL is in the advisory if wanted later.
+
+## Earlier progress (Aug 21, 2026 — autonomous continuation, before deploy)
 - **Media storage adapter added.** `@payloadcms/storage-vercel-blob` is wired
   into `src/payload.config.ts`, gated on `process.env.BLOB_READ_WRITE_TOKEN`
   (falls back to local disk when the var isn't set, so local dev is
@@ -62,24 +100,12 @@ Pushed to **https://github.com/The-Brooklyn-Review/tbr-cms-demo** (private, org-
   interactively.
 
 ## Not done — next session picks up here
-1. **Push schema + seed data to Supabase, then deploy to Vercel.** Once the
-   MCP approval gate above clears (or from a machine with direct DB access):
-   - Apply the schema (get it fresh via the local-Postgres dump-and-replay
-     trick above, or regenerate — don't hand-copy the old dump verbatim if
-     collections have changed since).
-   - Re-run `GRANT ALL PRIVILEGES ON ALL TABLES/SEQUENCES IN SCHEMA public TO
-     payload_app;` after applying schema DDL, since `apply_migration` runs as
-     a different role and will own the new objects.
-   - Load seed data (from the `pg_dump --data-only --column-inserts` output,
-     or just re-run `seedRun.ts` pointed at the Supabase pooler connection
-     string once a network path exists).
-   - Create Vercel project under team **The Brooklyn Review**
-     (`team_40vODsSegEo14mmXqUrufHCm`), linked to the GitHub repo. Set
-     `DATABASE_URL` (the `payload_app` pooler string above), a **fresh**
-     `PAYLOAD_SECRET` (do not reuse the local demo one in `.env`),
-     `NEXT_PUBLIC_SERVER_URL`, and `BLOB_READ_WRITE_TOKEN` (create a Vercel
-     Blob store first — the storage adapter no-ops without this var).
-2. Optional: issue archive page, genre archive page.
+1. **Create the Vercel Blob store** and set `BLOB_READ_WRITE_TOKEN` (see live
+   env vars above), then redeploy — media uploads via `/admin` don't work
+   until this is done.
+2. **Git-linked auto-deploy** — see the "not git-linked" note above for the
+   three ways to unblock this.
+3. Optional: issue archive page, genre archive page.
 
 ## Gotchas already hit (don't rediscover)
 - `payload run <script>` silently no-ops here. Use:
