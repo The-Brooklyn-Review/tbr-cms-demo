@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { anyone, authenticated, editorOnly } from '../access'
 import { revalidateRelatedContent } from '../hooks/revalidate'
+import { slugField } from '../fields/slug'
 
 export const Genres: CollectionConfig = {
   slug: 'genres',
@@ -21,13 +22,7 @@ export const Genres: CollectionConfig = {
   hooks: { afterChange: [revalidateRelatedContent] },
   fields: [
     { name: 'name', type: 'text', required: true },
-    {
-      name: 'slug',
-      type: 'text',
-      required: true,
-      unique: true,
-      admin: { description: 'Used in the URL, e.g. /genre/poetry' },
-    },
+    slugField('name', 'Used in the URL, e.g. /genre/poetry. Auto-filled from the name.'),
     {
       name: 'description',
       type: 'textarea',

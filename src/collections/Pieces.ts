@@ -8,6 +8,7 @@ import {
 } from '@payloadcms/richtext-lexical'
 import { authenticated, editorOnly, publishedOrSignedIn } from '../access'
 import { revalidatePiece, revalidatePieceOnDelete } from '../hooks/revalidate'
+import { slugField } from '../fields/slug'
 
 // A trailing slash here breaks live preview silently: the postMessage handler
 // compares this string against the browser's event.origin, which never has a
@@ -71,16 +72,7 @@ export const Pieces: CollectionConfig = {
       type: 'text',
       required: true,
     },
-    {
-      name: 'slug',
-      type: 'text',
-      required: true,
-      unique: true,
-      admin: {
-        position: 'sidebar',
-        description: 'The URL for this piece, e.g. /pieces/the-sunken-place',
-      },
-    },
+    slugField('title', 'The URL for this piece, e.g. /pieces/the-sunken-place. Auto-filled from the title.'),
     {
       name: 'genre',
       type: 'relationship',

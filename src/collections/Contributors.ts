@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { anyone, authenticated, editorOnly } from '../access'
 import { revalidateRelatedContent } from '../hooks/revalidate'
+import { slugField } from '../fields/slug'
 
 export const Contributors: CollectionConfig = {
   slug: 'contributors',
@@ -21,13 +22,7 @@ export const Contributors: CollectionConfig = {
   hooks: { afterChange: [revalidateRelatedContent] },
   fields: [
     { name: 'name', type: 'text', required: true },
-    {
-      name: 'slug',
-      type: 'text',
-      required: true,
-      unique: true,
-      admin: { description: 'Used in the URL, e.g. /contributors/jane-doe' },
-    },
+    slugField('name', 'The URL for this person, e.g. /contributors/jane-doe. Auto-filled from their name.'),
     {
       name: 'roles',
       type: 'select',

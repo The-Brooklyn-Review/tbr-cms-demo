@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { anyone, authenticated, editorOnly } from '../access'
 import { revalidateRelatedContent } from '../hooks/revalidate'
+import { slugField } from '../fields/slug'
 
 export const Issues: CollectionConfig = {
   slug: 'issues',
@@ -26,7 +27,7 @@ export const Issues: CollectionConfig = {
       required: true,
       admin: { description: 'Display name, e.g. "Spring 2026".' },
     },
-    { name: 'slug', type: 'text', required: true, unique: true },
+    slugField('title'),
     {
       type: 'row',
       fields: [
