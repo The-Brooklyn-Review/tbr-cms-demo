@@ -66,6 +66,13 @@ export default buildConfig({
   },
   editor: lexicalEditor(),
   db: postgresAdapter({
+    // Schema changes ship as reviewed SQL files, not as an automatic diff
+    // applied at boot. `push` is the convenient dev default, but on a shared
+    // database it means whichever process starts first silently rewrites the
+    // schema — including a deploy that was only meant to change a stylesheet.
+    // With migrations, the SQL is in the diff, runs once, and is recorded.
+    push: false,
+    migrationDir: path.resolve(dirname, 'migrations'),
     pool: {
       connectionString: useTransactionPooler(process.env.DATABASE_URL || ''),
       // Transaction mode hands connections back per transaction, so a modest

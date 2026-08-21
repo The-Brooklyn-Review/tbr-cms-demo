@@ -128,7 +128,7 @@ export interface UserAuthOperations {
   };
 }
 /**
- * A single published work — a poem, a story, an essay, an interview. This is where most editorial work happens.
+ * A single published work: a poem, story, essay, or interview.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pieces".
@@ -151,11 +151,11 @@ export interface Piece {
    */
   featured?: boolean | null;
   /**
-   * A short standfirst shown under the title. One or two sentences. Optional.
+   * Optional standfirst shown under the title. One or two sentences.
    */
   deck?: string | null;
   /**
-   * The piece itself. Use the Verse block for poetry so line breaks survive.
+   * Use the Verse block for poetry so line breaks survive.
    */
   body: {
     root: {
@@ -173,19 +173,19 @@ export interface Piece {
     [k: string]: unknown;
   };
   /**
-   * The writer, plus a translator or interviewer if there is one. Their bios pull through automatically.
+   * The writer, plus translator or interviewer if applicable.
    */
   contributors: (number | Contributor)[];
   /**
-   * Art paired with this piece. The artist and their bio come from the artwork itself, so you never retype credits.
+   * Art paired with this piece.
    */
   artwork?: (number | Artwork)[] | null;
   /**
-   * Optional hex value pulled from the artwork, used as this piece’s accent on the site. Leave blank for the house colour.
+   * Optional hex color for this piece’s accent. Leave blank for the house color.
    */
   accentColor?: string | null;
   /**
-   * Optional. Chosen by hand — an editor deciding what reads well next to this, rather than an algorithm guessing.
+   * Optional. Shown as "Read next" on the piece page.
    */
   relatedPieces?: (number | Piece)[] | null;
   updatedAt: string;
@@ -193,7 +193,7 @@ export interface Piece {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Fiction, Poetry, Nonfiction, and so on. Each genre gets its own archive page.
+ * Fiction, Poetry, Nonfiction, and so on.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "genres".
@@ -257,7 +257,7 @@ export interface Issue {
   createdAt: string;
 }
 /**
- * Art is its own thing here, not just an image attached to a piece. One entry per artwork, so it can be paired with writing and still keep its own credits.
+ * One entry per artwork. Link it to pieces from the piece editor.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "artworks".
@@ -314,7 +314,7 @@ export interface Media {
   focalY?: number | null;
 }
 /**
- * Everyone who appears in the magazine — writers, artists, translators, editors. One entry per person, even if they wear more than one hat.
+ * Writers, artists, translators, and editors — one entry per person.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contributors".
@@ -327,11 +327,11 @@ export interface Contributor {
    */
   slug: string;
   /**
-   * A person can hold more than one role — a poet who also makes collages gets both, and keeps one page.
+   * Select all roles that apply.
    */
   roles: ('Writer' | 'Artist' | 'Translator' | 'Editor')[];
   /**
-   * The contributor note that runs at the foot of a piece. Works for writers and artists alike.
+   * Shown at the foot of their pieces.
    */
   bio?: {
     root: {
@@ -369,7 +369,7 @@ export interface User {
   id: number;
   name?: string | null;
   /**
-   * A real build would go finer-grained than this; two roles is enough to show the idea.
+   * Editors can publish and delete. Readers can draft only.
    */
   role: 'editor' | 'reader';
   updatedAt: string;
