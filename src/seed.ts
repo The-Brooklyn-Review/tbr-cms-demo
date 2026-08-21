@@ -64,7 +64,12 @@ export const seed = async (payload: Payload) => {
   })
 
   // ── contributors ────────────────────────────────────────
-  const mk = (name: string, slug: string, roles: string[], bio: string) =>
+  const mk = (
+    name: string,
+    slug: string,
+    roles: ('Writer' | 'Artist' | 'Translator' | 'Editor')[],
+    bio: string,
+  ) =>
     payload.create({ collection: 'contributors', data: { name, slug, roles, bio: doc([p(bio)]) as any } })
 
   const nadia = await mk('Nadia Okonkwo', 'nadia-okonkwo', ['Writer'],
