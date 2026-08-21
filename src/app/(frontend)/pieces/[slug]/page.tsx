@@ -21,13 +21,13 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
   const piece: any = docs[0]
   if (!piece) notFound()
 
-  const contributors = (piece.contributors || []).filter((c: any) => typeof c === 'object')
-  const artworks = (piece.artwork || []).filter((a: any) => typeof a === 'object')
-  const related = (piece.relatedPieces || []).filter((p: any) => typeof p === 'object')
+  const contributors = (piece.contributors || []).filter((c: any) => c && typeof c === 'object')
+  const artworks = (piece.artwork || []).filter((a: any) => a && typeof a === 'object')
+  const related = (piece.relatedPieces || []).filter((p: any) => p && typeof p === 'object')
 
   // artists come from the artwork, so credits are never retyped
   const artists = artworks
-    .map((a: any) => (typeof a.artist === 'object' ? a.artist : null))
+    .map((a: any) => (a.artist && typeof a.artist === 'object' ? a.artist : null))
     .filter(Boolean)
   const people = [...contributors, ...artists].filter(
     (p: any, i: number, arr: any[]) => arr.findIndex((x: any) => x.id === p.id) === i,
@@ -40,8 +40,8 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
     >
       <header className="article-head">
         <span className="kicker">
-          {typeof piece.genre === 'object' ? piece.genre.name : ''}
-          {typeof piece.issue === 'object' ? ` · ${piece.issue.title}` : ''}
+          {piece.genre && typeof piece.genre === 'object' ? piece.genre.name : ''}
+          {piece.issue && typeof piece.issue === 'object' ? ` · ${piece.issue.title}` : ''}
         </span>
         <h1>{piece.title}</h1>
         {piece.deck ? <p className="deck">{piece.deck}</p> : null}
@@ -56,14 +56,14 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
         </p>
       </header>
 
-      {artworks[0] && typeof artworks[0].image === 'object' ? (
+      {artworks[0] && artworks[0].image && typeof artworks[0].image === 'object' ? (
         <figure>
           <img src={artworks[0].image.url} alt={artworks[0].image.alt || artworks[0].title} />
           <figcaption>
             <em>{artworks[0].title}</em>
             {artworks[0].medium ? `, ${artworks[0].medium}` : ''}
             {artworks[0].year ? `, ${artworks[0].year}` : ''}
-            {typeof artworks[0].artist === 'object' ? ` · ${artworks[0].artist.name}` : ''}
+            {artworks[0].artist && typeof artworks[0].artist === 'object' ? ` · ${artworks[0].artist.name}` : ''}
           </figcaption>
         </figure>
       ) : null}

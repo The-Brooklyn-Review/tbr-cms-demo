@@ -50,7 +50,7 @@ export default async function ContributorPage({ params }: { params: Promise<{ sl
               <li key={p.id}>
                 <Link href={`/pieces/${p.slug}`}>
                   <span className="t">{p.title}</span>
-                  <span className="by">{typeof p.issue === 'object' ? p.issue.title : ''}</span>
+                  <span className="by">{p.issue && typeof p.issue === 'object' ? p.issue.title : ''}</span>
                 </Link>
               </li>
             ))}
