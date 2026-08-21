@@ -7,6 +7,15 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
  * config, but its enum label is left in place rather than dropped —
  * Postgres can't cheaply remove an enum value, and nothing currently uses
  * it, so there's no data to migrate off of it.
+ *
+ * On Supabase specifically, ALTER TYPE ... ADD VALUE requires owning the
+ * type, and the pooled connection the app migrates through doesn't —
+ * even though the same role can ALTER TABLE the columns that use it. This
+ * failed the first time it ran in production for exactly that reason. It
+ * was applied instead through Supabase's own (privileged) SQL runner, and
+ * the migration recorded as run so this file doesn't try — and fail —
+ * again on the next deploy. Left in the migration history rather than
+ * deleted so the schema story stays honest about what actually happened.
  */
 export async function up({ db }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
