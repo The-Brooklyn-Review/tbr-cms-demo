@@ -6,6 +6,8 @@ import {
   HorizontalRuleFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { authenticated, editorOnly, publishedOrSignedIn } from '../access'
+import { revalidatePiece, revalidatePieceOnDelete } from '../hooks/revalidate'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://tbr-cms-demo.vercel.app'
 
@@ -30,7 +32,15 @@ export const Pieces: CollectionConfig = {
     maxPerDoc: 20,
   },
   access: {
-    read: () => true,
+    // Anonymous readers see published pieces only — drafts stay internal.
+    read: publishedOrSignedIn,
+    create: authenticated,
+    update: authenticated,
+    delete: editorOnly,
+  },
+  hooks: {
+    afterChange: [revalidatePiece],
+    afterDelete: [revalidatePieceOnDelete],
   },
   fields: [
     {

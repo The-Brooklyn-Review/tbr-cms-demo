@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { anyone, authenticated, editorOnly } from '../access'
+import { revalidateRelatedContent } from '../hooks/revalidate'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -6,7 +8,15 @@ export const Media: CollectionConfig = {
     group: 'System',
     description: 'Raw uploads. Most of the time you want Artworks instead.',
   },
-  access: { read: () => true },
+  access: {
+    // Reference data shown on published pages — public to read,
+    // signed-in to change.
+    read: anyone,
+    create: authenticated,
+    update: authenticated,
+    delete: editorOnly,
+  },
+  hooks: { afterChange: [revalidateRelatedContent] },
   upload: {
     mimeTypes: ['image/*'],
   },

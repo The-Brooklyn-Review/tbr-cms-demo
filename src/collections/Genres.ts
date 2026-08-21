@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { anyone, authenticated, editorOnly } from '../access'
+import { revalidateRelatedContent } from '../hooks/revalidate'
 
 export const Genres: CollectionConfig = {
   slug: 'genres',
@@ -8,7 +10,15 @@ export const Genres: CollectionConfig = {
     defaultColumns: ['name', 'slug', 'description'],
     description: 'Fiction, Poetry, Nonfiction, and so on.',
   },
-  access: { read: () => true },
+  access: {
+    // Reference data shown on published pages — public to read,
+    // signed-in to change.
+    read: anyone,
+    create: authenticated,
+    update: authenticated,
+    delete: editorOnly,
+  },
+  hooks: { afterChange: [revalidateRelatedContent] },
   fields: [
     { name: 'name', type: 'text', required: true },
     {

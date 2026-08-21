@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
-export const dynamic = 'force-dynamic'
+// Built once, rebuilt on publish. See hooks/revalidate.ts.
+export const revalidate = false
 
 const byline = (contributors: any[]) =>
   (contributors || []).map((c: any) => (c && typeof c === 'object' ? c.name : '')).filter(Boolean).join(' & ')
@@ -13,13 +14,15 @@ export default async function HomePage() {
 
   const { docs: allPieces } = await payload.find({
     collection: 'pieces',
+    where: { _status: { equals: 'published' } },
     depth: 2,
     limit: 100,
     sort: '-publishedAt',
   })
 
-  // Skip drafts that haven't been filled in yet (no title/slug), so an
-  // editor mid-draft in the CMS doesn't break the homepage.
+  // A piece can be published while still missing a title or slug — autosave
+  // writes drafts without running required-field validation — so skip any
+  // that can't be linked to rather than rendering a broken row.
   const pieces = allPieces.filter((p: any) => p.title && p.slug)
 
   const lead = pieces.find((p: any) => p.featured) || pieces[0]
